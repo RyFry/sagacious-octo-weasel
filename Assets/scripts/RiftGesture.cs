@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FrameSynthesis.VR
-{
 	struct Sample
 	{
 		public float timestamp;
@@ -28,7 +26,7 @@ namespace FrameSynthesis.VR
 		public int sensor = 0;
 		public AudioSource spitStart;
 		public AudioSource spitEnd;
-		public GameObject[] list;
+		public AudioStateMachine manager;
 		
 		LinkedList<Sample> samples;
 		float waitTime = 0f;
@@ -92,6 +90,7 @@ namespace FrameSynthesis.VR
 				if (xMax - basePos > 8f &&
 				    Mathf.Abs(current - basePos) < 5f) {
 					print("nodded");
+				manager.ChangeAudioState(AudioStateMachine.AudioResponse.Yes);
 					waitTime = detectInterval;
 				}
 			} catch (InvalidOperationException) {
@@ -110,6 +109,7 @@ namespace FrameSynthesis.VR
 				if ((yMax - basePos > 10f || basePos - yMin > 10f) &&
 				    Mathf.Abs(current - basePos) < 5f) {
 					print("shook head");
+				manager.ChangeAudioState(AudioStateMachine.AudioResponse.No);
 					waitTime = detectInterval;
 				}
 			} catch (InvalidOperationException) {
@@ -130,6 +130,7 @@ namespace FrameSynthesis.VR
 				if(spitLenght - raisedPos > 22f)
 				{
 					print ("ptugh");
+				manager.ChangeAudioState(AudioStateMachine.AudioResponse.Spit);
 					spitEnd.Play ();
 					waitTime = detectInterval;
 					beginSpit = false;
@@ -150,6 +151,4 @@ namespace FrameSynthesis.VR
 			}
 			return degree;
 		}
-
-	}
 }

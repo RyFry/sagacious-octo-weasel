@@ -2,32 +2,45 @@
 using System.Collections;
 
 public class CircularAudioState : MonoBehaviour {
-	public AudioSource audio;
+	bool SpitOn = false;
+	public AudioState nextAudioState;
+	
+	public AudioSource audioSource;
 	public AudioClip yes;
 	public AudioClip no;
 	public AudioClip spit;
-	bool SpitOn = false;
-	
-	// Use this for initialization
-	void Start () {
-		this.audio = GetComponent<AudioSource> ();
-		this.audio.Play();
+
+	/// <summary>
+	/// ///////////////////////t<MEP
+	///
+	/// </summary>
+	/// 
+	public void Start() {
+		StartIntro();
 	}
 
-	void Update() {
-		if(!this.audio.isPlaying && !SpitOn) {
-			this.audio.clip = yes;
-			this.audio.Play ();
+	// Use this for initialization
+	public void StartIntro () {
+		this.audioSource = GetComponent<AudioSource> ();
+		audioSource.enabled = true;
+		this.audioSource.Play();
+	}
+
+	public void Update() {
+		if(!this.audioSource.isPlaying && !SpitOn) {
+			this.audioSource.clip = yes;
+			this.audioSource.Play ();
 		}
 	}
 	
-	void StartYes() {
+	public void StartYes() {
 	}
 	
-	void StartNo() {
+	public void StartNo() {
 	}
-	void StartSpit() {
-			this.audio.clip = spit;
-			this.audio.Play ();
+	public void StartSpit() {
+		this.audioSource.clip = spit;
+		SpitOn = true;
+		this.audioSource.Play ();
 	}
 }

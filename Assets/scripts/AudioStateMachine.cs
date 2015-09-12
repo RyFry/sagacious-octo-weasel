@@ -14,44 +14,75 @@ public class AudioStateMachine : MonoBehaviour {
 	private int guestIndex;
 
 	private AudioState currentAudioState;
+	private CircularAudioState circles;
+	private bool isACircle = false;
 	private bool responded;
 
 	// Use this for initialization
 	void Start () {
 		this.guestIndex = 0;
-		this.currentAudioState = this.guestList [0].GetComponent<AudioState> ();
+		this.currentAudioState = GameObject.Instantiate(guestList[guestIndex]).GetComponent<AudioState>();
 		this.responded = false;
+		StartIntro ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (! this.currentAudioState.audio.isPlaying && this.responded == true) {
-			this.currentAudioState = this.guestList [guestIndex].GetComponent<AudioState> ();
+		if (! this.currentAudioState.audioSource.isPlaying && this.responded == true) {
+			print("changing guest");
+			guestIndex++;
+			isACircle = false;
+			if (!guestList[guestIndex].name.Equals( "CircularGuest 1")) {
+
+				this.currentAudioState = GameObject.Instantiate(guestList[guestIndex]).GetComponent<AudioState>();
+			}
+			else {
+				print ("circles");
+				isACircle = true;
+				circles = GameObject.Instantiate(guestList[guestIndex]).GetComponent<CircularAudioState>();
+			}
 			this.responded = false;
+			StartIntro ();
 		}
 	}
 
 	void StartIntro () {
-		this.currentAudioState.StartIntro ();
+		if(isACircle) {
+			circles.StartIntro();
+		} else {
+			this.currentAudioState.StartIntro ();
+		}
 	}
 
-	void ChangeAudioState (AudioResponse response) {
-		// Don't accept input if audio is already playing
-		if (this.currentAudioState.audio.isPlaying)
-			return;
+	public void ChangeAudioState (AudioResponse response) {
 
-		switch (response) {
-		case AudioResponse.Yes:
-			this.currentAudioState.StartYes ();
-			break;
-		case AudioResponse.No:
-			this.currentAudioState.StartNo ();
-			break;
-		case AudioResponse.Spit:
-			this.currentAudioState.StartSpit ();
-			break;
+		if(!responded) {
+			if(isACircle) {
+				switch(response){
+				case AudioResponse.Yes:
+					this.circles.StartYes ();
+					return;
+				case AudioResponse.No:
+				this.circles.StartNo ();
+					return;
+				case AudioResponse.Spit:
+				this.circles.StartSpit ();
+				break;
+				}
+			} else {
+				switch (response) {
+				case AudioResponse.Yes:
+					this.currentAudioState.StartYes ();
+					break;
+				case AudioResponse.No:
+					this.currentAudioState.StartNo ();
+					break;
+				case AudioResponse.Spit:
+					this.currentAudioState.StartSpit ();
+					break;
+				}
+			}
+			this.responded = true;
 		}
-
-		this.responded = true;
 	}
 }

@@ -5,38 +5,37 @@ public class AudioState : MonoBehaviour {
 
 	public AudioState nextAudioState;
 
-	public AudioSource audio;
+	public AudioSource audioSource;
 	public AudioClip yes;
 	public AudioClip no;
 	public AudioClip spit;
 
 	// Use this for initialization
-	public void StartIntro () {
-		this.audio = GetComponent<AudioSource> ();
-		this.audio.Play();
+	public virtual void StartIntro () {
+		this.audioSource = GetComponent<AudioSource> ();
+		this.audioSource.Play();
 	}
 	
 	// Update is called once per frame
-	public void StartYes () {
-		if (! this.audio.isPlaying) {
-			this.audio.clip = yes;
-			this.audio.Play();
+	public virtual void StartYes () {
+		if (! this.audioSource.isPlaying) {
+			this.audioSource.clip = yes;
+			this.audioSource.Play();
 		}
 	}
 
 	// Update is called once per frame
-	public void StartNo () {
-		if (! this.audio.isPlaying) {
-			this.audio.clip = no;
-			this.audio.Play();
+	public virtual void StartNo () {
+		if (! this.audioSource.isPlaying) {
+			this.audioSource.clip = no;
+			this.audioSource.Play();
 		}
 	}
 
 	// Update is called once per frame
-	public void StartSpit () {
-		if (! this.audio.isPlaying) {
-			this.audio.clip = spit;
-			this.audio.Play();
-		}
+	public virtual void StartSpit () {
+		print ("start spit");
+			this.audioSource.clip = spit;
+			this.audioSource.Play();
 	}
 }
