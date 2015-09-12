@@ -9,16 +9,30 @@ public class AudioStateMachine : MonoBehaviour {
 		Spit
 	};
 
+	public GameObject[] guestList;
+
+	private int guestIndex;
+
 	private AudioState currentAudioState;
+	private bool responded;
 
 	// Use this for initialization
 	void Start () {
-		this.currentAudioState = GameObject.Find ("Main Camera").GetComponent<AudioState>();
+		this.guestIndex = 0;
+		this.currentAudioState = this.guestList [0].GetComponent<AudioState> ();
+		this.responded = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (! this.currentAudioState.audio.isPlaying && this.responded == true) {
+			this.currentAudioState = this.guestList [guestIndex].GetComponent<AudioState> ();
+			this.responded = false;
+		}
+	}
+
+	void StartIntro () {
+		this.currentAudioState.StartIntro ();
 	}
 
 	void ChangeAudioState (AudioResponse response) {
@@ -28,14 +42,16 @@ public class AudioStateMachine : MonoBehaviour {
 
 		switch (response) {
 		case AudioResponse.Yes:
-			this.currentAudioState.audio.clip = this.currentAudioState.yes;
+			this.currentAudioState.StartYes ();
 			break;
 		case AudioResponse.No:
-			this.currentAudioState.audio.clip = this.currentAudioState.no;
+			this.currentAudioState.StartNo ();
 			break;
 		case AudioResponse.Spit:
-			this.currentAudioState.audio.clip = this.currentAudioState.spit;
+			this.currentAudioState.StartSpit ();
 			break;
 		}
+
+		this.responded = true;
 	}
 }
