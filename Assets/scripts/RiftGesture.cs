@@ -28,6 +28,7 @@ namespace FrameSynthesis.VR
 		public int sensor = 0;
 		public AudioSource spitStart;
 		public AudioSource spitEnd;
+		public GameObject[] list;
 		
 		LinkedList<Sample> samples;
 		float waitTime = 0f;
