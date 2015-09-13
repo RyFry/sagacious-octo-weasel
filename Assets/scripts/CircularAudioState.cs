@@ -22,7 +22,6 @@ public class CircularAudioState : MonoBehaviour {
 	// Use this for initialization
 	public void StartIntro () {
 		this.audioSource = GetComponent<AudioSource> ();
-		audioSource.enabled = true;
 		this.audioSource.Play();
 	}
 

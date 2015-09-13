@@ -17,11 +17,14 @@ public class AudioStateMachine : MonoBehaviour {
 	private CircularAudioState circles;
 	private bool isACircle = false;
 	private bool responded;
+	private GameObject current;
 
 	// Use this for initialization
 	void Start () {
 		this.guestIndex = 0;
-		this.currentAudioState = GameObject.Instantiate(guestList[guestIndex]).GetComponent<AudioState>();
+		current = (GameObject)GameObject.Instantiate(guestList[guestIndex], this.transform.position, this.transform.rotation);
+		this.currentAudioState = current.GetComponent<AudioState>();
+
 		this.responded = false;
 		StartIntro ();
 	}
@@ -33,20 +36,22 @@ public class AudioStateMachine : MonoBehaviour {
 			guestIndex++;
 			isACircle = false;
 			if (!guestList[guestIndex].name.Equals( "CircularGuest 1")) {
-
-				this.currentAudioState = GameObject.Instantiate(guestList[guestIndex]).GetComponent<AudioState>();
+				GameObject.Destroy(current);
+				current = (GameObject)GameObject.Instantiate(guestList[guestIndex], this.transform.position, this.transform.rotation);
+				this.currentAudioState = current.GetComponent<AudioState>();
+				this.responded = false;
 			}
 			else {
 				print ("circles");
 				isACircle = true;
 				circles = GameObject.Instantiate(guestList[guestIndex]).GetComponent<CircularAudioState>();
 			}
-			this.responded = false;
 			StartIntro ();
 		}
 	}
 
 	void StartIntro () {
+		this.responded = false;
 		if(isACircle) {
 			circles.StartIntro();
 		} else {
@@ -72,17 +77,30 @@ public class AudioStateMachine : MonoBehaviour {
 			} else {
 				switch (response) {
 				case AudioResponse.Yes:
+					if(!currentAudioState.audioSource.isPlaying) {
+						this.responded = true;
+					}
 					this.currentAudioState.StartYes ();
+					if(!currentAudioState.audioSource.isPlaying) {
+						this.responded = true;
+					}
 					break;
 				case AudioResponse.No:
+					if(!currentAudioState.audioSource.isPlaying) {
+						this.responded = true;
+					}
 					this.currentAudioState.StartNo ();
+					if(!currentAudioState.audioSource.isPlaying) {
+						this.responded = true;
+					}
 					break;
 				case AudioResponse.Spit:
 					this.currentAudioState.StartSpit ();
+					this.responded = true;
 					break;
 				}
+
 			}
-			this.responded = true;
 		}
 	}
 }
